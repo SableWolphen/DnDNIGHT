@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#17251e">
+  <title>DnD Night · Your adventure, together</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/src/app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="topbar"><a class="brand" href="#/characters"><span class="sigil" aria-hidden="true">✧</span> DnD<span>Night</span></a><nav aria-label="Main navigation"><a href="#/characters" data-route="characters">Character sheets</a><a href="#/store" data-route="store">The marketplace</a></nav><span class="local-badge">● Local campaign</span></header>
+  <div id="app"></div>
+  <div id="notice" role="status" aria-live="polite"></div>
+  <footer>Made for the stories you haven’t told yet.<span>Saved on this device · <button id="export" class="text-button">Export backup</button> · <label class="text-button" for="import">Import backup</label><input id="import" type="file" accept="application/json,.json" hidden></span></footer>
+</body>
+</html>
