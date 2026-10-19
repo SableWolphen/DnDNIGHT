@@ -58,6 +58,35 @@ assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerW
 await page.getByRole('link',{name:'The marketplace',exact:true}).click();
 await page.screenshot({path:'browser-artifacts/marketplace-mobile.png',fullPage:true});
 assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+// Export the saved campaign, then prove it restores a changed party.
+const downloadEvent=page.waitForEvent('download');
+await page.getByRole('button',{name:'Export backup'}).click();
+const download=await downloadEvent;
+const backupPath=await download.path();
+const savedCampaign=await page.evaluate(()=>localStorage.getItem('dndnight.campaign.v1'));
+await page.getByRole('link',{name:'Character sheets',exact:true}).click();
+await page.getByLabel('Current HP',{exact:true}).fill('999');
+await page.getByRole('button',{name:'Save sheet',exact:true}).click();
+assert.match(await page.locator('#notice').textContent(),/maximum HP/);
+assert.equal(await page.evaluate(()=>localStorage.getItem('dndnight.campaign.v1')),savedCampaign);
+page.once('dialog',d=>d.accept());
+await page.getByRole('button',{name:'Create character',exact:false}).click();
+await page.getByLabel('Character name').fill('Temporary adventurer');
+await page.getByRole('button',{name:'Create character',exact:true}).last().click();
+page.once('dialog',d=>d.accept());
+await page.locator('#import').setInputFiles(backupPath);
+await page.getByRole('button',{name:'Mira Ashford',exact:false}).waitFor();
+assert.equal(await page.locator('.party-card').count(),2);
+assert.equal(await page.evaluate(()=>localStorage.getItem('dndnight.campaign.v1')),savedCampaign);
+// Bad persisted data is preserved and can be recovered with a valid backup.
+await page.evaluate(()=>localStorage.setItem('dndnight.campaign.v1','broken data'));
+await page.reload();
+await page.getByRole('heading',{name:'Let’s recover your campaign'}).waitFor();
+assert.equal(await page.evaluate(()=>localStorage.getItem('dndnight.campaign.v1')),'broken data');
+page.once('dialog',d=>d.accept());
+await page.locator('#import').setInputFiles(backupPath);
+await page.getByRole('button',{name:'Mira Ashford',exact:false}).waitFor();
+assert.equal(await page.evaluate(()=>localStorage.getItem('dndnight.campaign.v1')),savedCampaign);
 assert.deepEqual(errors,[]);
 await browser.close();
-console.log('PASS: character edits, persistence, buying, selling, equipped-item protection, search, party isolation, mobile overflow, and no browser errors.');
+console.log('PASS: character edits, persistence, buying, selling, equipped-item protection, search, party isolation, mobile overflow, HP validation, backup export/import, corrupted-save recovery, and no browser errors.');

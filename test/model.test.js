@@ -21,7 +21,7 @@ test('insufficient funds, overselling and invalid quantities cannot mutate sourc
   const c = newCharacter(); c.wallet = 0;
   const before = structuredClone(c);
   assert.throws(()=>trade(c,'dagger',1,'buy'),/coin/);
-  for (const qty of [0,-1,1.1,NaN,Infinity,10000,'']) assert.throws(()=>trade(c,'torch',qty,'buy'));
+  for (const qty of [0,-1,1.1,NaN,Infinity,10000,'',null,true]) assert.throws(()=>trade(c,'torch',qty,'buy'));
   assert.throws(()=>trade(c,'missing',1,'buy'));
   assert.throws(()=>trade(c,'missing',1,'sell'));
   assert.throws(()=>trade(c,'torch',1,'refund'));

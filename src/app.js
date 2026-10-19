@@ -51,7 +51,8 @@ function bindSearch() {
 }
 function modal(title, content, formId, submitLabel = 'Save changes') {
   const dialog = document.querySelector('#modal');
-  dialog.innerHTML = `<form id="${formId}"><div class="section-title"><h2>${title}</h2><button type="button" class="text-button" data-action="close" aria-label="Close dialog">✕</button></div>${content}<p class="form-error" role="alert"></p><div class="dialog-actions"><button type="button" class="button outline" data-action="close">Cancel</button><button class="button primary">${submitLabel}</button></div></form>`;
+  dialog.setAttribute('aria-labelledby', 'dialog-title');
+  dialog.innerHTML = `<form id="${formId}"><div class="section-title"><h2 id="dialog-title">${title}</h2><button type="button" class="text-button" data-action="close" aria-label="Close dialog">✕</button></div>${content}<p class="form-error" role="alert"></p><div class="dialog-actions"><button type="button" class="button outline" data-action="close">Cancel</button><button class="button primary">${submitLabel}</button></div></form>`;
   dialog.showModal();
 }
 let editingId = null, tradeId = null;
